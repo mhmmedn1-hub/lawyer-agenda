@@ -7,12 +7,27 @@ const DEFAULT_USER = {
   password: '6503536'
 };
 
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
+  projectId: 'YOUR_PROJECT_ID',
+  storageBucket: 'YOUR_PROJECT_ID.appspot.com',
+  messagingSenderId: 'YOUR_SENDER_ID',
+  appId: 'YOUR_APP_ID'
+};
+
+const USE_FIREBASE = Object.values(firebaseConfig).every((value) => value && !value.includes('YOUR_'));
+
 const state = {
   clients: [],
   cases: [],
   sessions: [],
   tasks: []
 };
+
+const firebaseApp = USE_FIREBASE ? firebase.initializeApp(firebaseConfig) : null;
+const db = USE_FIREBASE ? firebase.firestore() : null;
+const auth = USE_FIREBASE ? firebase.auth() : null;
 
 const elements = {
   loginScreen: document.getElementById('login-screen'),
@@ -40,7 +55,6 @@ const elements = {
   reportCasesSummary: document.getElementById('report-cases-summary'),
   reportSessionsSummary: document.getElementById('report-sessions-summary'),
   reportTasksSummary: document.getElementById('report-tasks-summary'),
-
   clientForm: document.getElementById('client-form'),
   clientId: document.getElementById('client-id'),
   clientName: document.getElementById('client-name'),
@@ -49,7 +63,6 @@ const elements = {
   clientCaseType: document.getElementById('client-case-type'),
   cancelClient: document.getElementById('cancel-client'),
   newClientBtn: document.getElementById('new-client-btn'),
-
   caseForm: document.getElementById('case-form'),
   caseId: document.getElementById('case-id'),
   caseClient: document.getElementById('case-client'),
@@ -58,7 +71,6 @@ const elements = {
   caseStatus: document.getElementById('case-status'),
   cancelCase: document.getElementById('cancel-case'),
   newCaseBtn: document.getElementById('new-case-btn'),
-
   sessionForm: document.getElementById('session-form'),
   sessionId: document.getElementById('session-id'),
   sessionClient: document.getElementById('session-client'),
@@ -67,7 +79,6 @@ const elements = {
   sessionType: document.getElementById('session-type'),
   cancelSession: document.getElementById('cancel-session'),
   newSessionBtn: document.getElementById('new-session-btn'),
-
   taskForm: document.getElementById('task-form'),
   taskId: document.getElementById('task-id'),
   taskTitle: document.getElementById('task-title'),
@@ -83,8 +94,63 @@ function generateId(prefix) {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-function loadData() {
+function isFirebaseConfigured() {
+  return USE_FIREBASE;
+}
+
+function getStatePayload() {
+  return {
+    clients: state.clients,
+    cases: state.cases,
+    sessions: state.sessions,
+    tasks: state.tasks
+  };
+}
+
+function saveToLocal() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(getStatePayload()));
+}
+
+async function saveToCloud() {
+  if (!isFirebaseConfigured() || !db) return;
+  try {
+    await db.collection('lawyerAgenda').doc('state').set(getStatePayload(), { merge: true });
+  } catch (error) {
+    console.warn('Firebase sync failed. Keeping local data only.', error);
+  }
+}
+
+function saveData() {
+  saveToLocal();
+  saveToCloud();
+}
+
+async function loadFromCloud() {
+  if (!isFirebaseConfigured() || !db) return null;
+  try {
+    const snapshot = await db.collection('lawyerAgenda').doc('state').get();
+    if (snapshot.exists) {
+      return snapshot.data();
+    }
+  } catch (error) {
+    console.warn('Firebase load failed; falling back to local storage.', error);
+  }
+  return null;
+}
+
+async function loadData() {
+  const cloudData = await loadFromCloud();
   const saved = localStorage.getItem(STORAGE_KEY);
+
+  if (cloudData) {
+    state.clients = Array.isArray(cloudData.clients) ? cloudData.clients : [];
+    state.cases = Array.isArray(cloudData.cases) ? cloudData.cases : [];
+    state.sessions = Array.isArray(cloudData.sessions) ? cloudData.sessions : [];
+    state.tasks = Array.isArray(cloudData.tasks) ? cloudData.tasks : [];
+    saveToLocal();
+    return;
+  }
+
   if (!saved) {
     state.clients = [
       { id: 'client-1', name: 'أحمد محمد', fileNo: 'MF-101', phone: '9665000001', caseType: 'مدنية' },
@@ -122,15 +188,6 @@ function loadData() {
     state.sessions = [];
     state.tasks = [];
   }
-}
-
-function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    clients: state.clients,
-    cases: state.cases,
-    sessions: state.sessions,
-    tasks: state.tasks
-  }));
 }
 
 function getTodayOffset(offsetDays) {
@@ -178,7 +235,7 @@ function setLoggedIn(value) {
 }
 
 function populateClientSelects() {
-  const options = state.clients.map(client => `
+  const options = state.clients.map((client) => `
     <option value="${client.id}">${client.name}</option>
   `).join('');
 
@@ -190,7 +247,7 @@ function renderStats() {
   elements.statClients.textContent = String(state.clients.length);
   elements.statCases.textContent = String(state.cases.length);
   elements.statSessions.textContent = String(state.sessions.length);
-  elements.statTasks.textContent = String(state.tasks.filter(task => !task.done).length);
+  elements.statTasks.textContent = String(state.tasks.filter((task) => !task.done).length);
 }
 
 function renderRecentClients() {
@@ -200,7 +257,7 @@ function renderRecentClients() {
     return;
   }
 
-  elements.recentClients.innerHTML = clients.map(client => `
+  elements.recentClients.innerHTML = clients.map((client) => `
     <li>
       <span>${client.name}</span>
       <small>${client.fileNo}</small>
@@ -218,8 +275,8 @@ function renderUpcomingSessions() {
     return;
   }
 
-  elements.upcomingSessions.innerHTML = sessions.map(session => {
-    const client = state.clients.find(item => item.id === session.clientId);
+  elements.upcomingSessions.innerHTML = sessions.map((session) => {
+    const client = state.clients.find((item) => item.id === session.clientId);
     return `
       <li>
         <span>${client ? client.name : 'موكل غير معروف'}</span>
@@ -235,7 +292,7 @@ function renderClientsTable() {
     return;
   }
 
-  elements.clientsTableBody.innerHTML = state.clients.map(client => `
+  elements.clientsTableBody.innerHTML = state.clients.map((client) => `
     <tr>
       <td>${client.name}</td>
       <td>${client.fileNo}</td>
@@ -257,8 +314,8 @@ function renderCasesTable() {
     return;
   }
 
-  elements.casesTableBody.innerHTML = state.cases.map(caseItem => {
-    const client = state.clients.find(item => item.id === caseItem.clientId);
+  elements.casesTableBody.innerHTML = state.cases.map((caseItem) => {
+    const client = state.clients.find((item) => item.id === caseItem.clientId);
     return `
       <tr>
         <td>${caseItem.title}</td>
@@ -282,8 +339,8 @@ function renderSessionsTable() {
     return;
   }
 
-  elements.sessionsTableBody.innerHTML = state.sessions.map(session => {
-    const client = state.clients.find(item => item.id === session.clientId);
+  elements.sessionsTableBody.innerHTML = state.sessions.map((session) => {
+    const client = state.clients.find((item) => item.id === session.clientId);
     return `
       <tr>
         <td>${client ? client.name : '—'}</td>
@@ -307,7 +364,7 @@ function renderTasks() {
     return;
   }
 
-  elements.tasksList.innerHTML = state.tasks.map(task => `
+  elements.tasksList.innerHTML = state.tasks.map((task) => `
     <div class="task-item">
       <div class="task-meta">
         <input type="checkbox" data-task-done="${task.id}" ${task.done ? 'checked' : ''} />
@@ -378,7 +435,7 @@ function handleClientSubmit(event) {
     return;
   }
 
-  const existingIndex = state.clients.findIndex(item => item.id === id);
+  const existingIndex = state.clients.findIndex((item) => item.id === id);
   if (existingIndex >= 0) {
     state.clients[existingIndex] = payload;
   } else {
@@ -407,7 +464,7 @@ function handleCaseSubmit(event) {
     return;
   }
 
-  const existingIndex = state.cases.findIndex(item => item.id === id);
+  const existingIndex = state.cases.findIndex((item) => item.id === id);
   if (existingIndex >= 0) {
     state.cases[existingIndex] = payload;
   } else {
@@ -436,7 +493,7 @@ function handleSessionSubmit(event) {
     return;
   }
 
-  const existingIndex = state.sessions.findIndex(item => item.id === id);
+  const existingIndex = state.sessions.findIndex((item) => item.id === id);
   if (existingIndex >= 0) {
     state.sessions[existingIndex] = payload;
   } else {
@@ -464,7 +521,7 @@ function handleTaskSubmit(event) {
     return;
   }
 
-  const existingIndex = state.tasks.findIndex(item => item.id === id);
+  const existingIndex = state.tasks.findIndex((item) => item.id === id);
   if (existingIndex >= 0) {
     state.tasks[existingIndex] = {
       ...state.tasks[existingIndex],
@@ -508,23 +565,6 @@ function logout() {
   showLoginScreen();
 }
 
-function initializeRememberedLogin() {
-  const remembered = localStorage.getItem(REMEMBER_KEY) === 'true';
-  if (remembered) {
-    elements.lawyerUser.value = DEFAULT_USER.username;
-    elements.lawyerPass.value = DEFAULT_USER.password;
-    elements.rememberMe.checked = true;
-  }
-
-  if (isLoggedIn()) {
-    elements.sidebarUserName.textContent = DEFAULT_USER.username;
-    showAppScreen();
-    renderAll();
-  } else {
-    showLoginScreen();
-  }
-}
-
 function attachEvents() {
   elements.loginForm.addEventListener('submit', handleLogin);
   elements.logoutBtn.addEventListener('click', logout);
@@ -566,7 +606,7 @@ function attachEvents() {
   document.addEventListener('click', (event) => {
     const clientEdit = event.target.closest('[data-client-edit]');
     if (clientEdit) {
-      const client = state.clients.find(item => item.id === clientEdit.dataset.clientEdit);
+      const client = state.clients.find((item) => item.id === clientEdit.dataset.clientEdit);
       if (!client) return;
       elements.clientId.value = client.id;
       elements.clientName.value = client.name;
@@ -580,7 +620,7 @@ function attachEvents() {
     if (clientDelete) {
       const id = clientDelete.dataset.clientDelete;
       if (confirm('هل أنت متأكد من حذف هذا الموكل؟')) {
-        state.clients = state.clients.filter(item => item.id !== id);
+        state.clients = state.clients.filter((item) => item.id !== id);
         saveData();
         renderAll();
       }
@@ -588,7 +628,7 @@ function attachEvents() {
 
     const caseEdit = event.target.closest('[data-case-edit]');
     if (caseEdit) {
-      const caseItem = state.cases.find(item => item.id === caseEdit.dataset.caseEdit);
+      const caseItem = state.cases.find((item) => item.id === caseEdit.dataset.caseEdit);
       if (!caseItem) return;
       elements.caseId.value = caseItem.id;
       elements.caseClient.value = caseItem.clientId;
@@ -602,7 +642,7 @@ function attachEvents() {
     if (caseDelete) {
       const id = caseDelete.dataset.caseDelete;
       if (confirm('هل أنت متأكد من حذف هذه القضية؟')) {
-        state.cases = state.cases.filter(item => item.id !== id);
+        state.cases = state.cases.filter((item) => item.id !== id);
         saveData();
         renderAll();
       }
@@ -610,7 +650,7 @@ function attachEvents() {
 
     const sessionEdit = event.target.closest('[data-session-edit]');
     if (sessionEdit) {
-      const session = state.sessions.find(item => item.id === sessionEdit.dataset.sessionEdit);
+      const session = state.sessions.find((item) => item.id === sessionEdit.dataset.sessionEdit);
       if (!session) return;
       elements.sessionId.value = session.id;
       elements.sessionClient.value = session.clientId;
@@ -624,7 +664,7 @@ function attachEvents() {
     if (sessionDelete) {
       const id = sessionDelete.dataset.sessionDelete;
       if (confirm('هل أنت متأكد من حذف هذه الجلسة؟')) {
-        state.sessions = state.sessions.filter(item => item.id !== id);
+        state.sessions = state.sessions.filter((item) => item.id !== id);
         saveData();
         renderAll();
       }
@@ -634,7 +674,7 @@ function attachEvents() {
     if (taskDelete) {
       const id = taskDelete.dataset.taskDelete;
       if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
-        state.tasks = state.tasks.filter(item => item.id !== id);
+        state.tasks = state.tasks.filter((item) => item.id !== id);
         saveData();
         renderAll();
       }
@@ -642,7 +682,7 @@ function attachEvents() {
 
     const taskDone = event.target.closest('[data-task-done]');
     if (taskDone) {
-      const task = state.tasks.find(item => item.id === taskDone.dataset.taskDone);
+      const task = state.tasks.find((item) => item.id === taskDone.dataset.taskDone);
       if (task) {
         task.done = taskDone.checked;
         saveData();
@@ -652,12 +692,33 @@ function attachEvents() {
   });
 }
 
-function init() {
-  loadData();
+function initializeRememberedLogin() {
+  const remembered = localStorage.getItem(REMEMBER_KEY) === 'true';
+  if (remembered) {
+    elements.lawyerUser.value = DEFAULT_USER.username;
+    elements.lawyerPass.value = DEFAULT_USER.password;
+    elements.rememberMe.checked = true;
+  }
+
+  if (isLoggedIn()) {
+    elements.sidebarUserName.textContent = DEFAULT_USER.username;
+    showAppScreen();
+    renderAll();
+  } else {
+    showLoginScreen();
+  }
+}
+
+async function init() {
+  await loadData();
   setCurrentDate();
   attachEvents();
   initializeRememberedLogin();
   showSection('dashboard');
+  if (isFirebaseConfigured()) {
+    console.log('Firebase is enabled and ready. Update firebaseConfig with your real project values.');
+  }
 }
 
 init();
+

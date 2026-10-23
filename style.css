@@ -1,526 +1,816 @@
-* {
-  box-sizing: border-box;
-}
-
-:root {
-  --bg: #07111d;
-  --bg-2: #0f1f2f;
-  --panel: rgba(15, 24, 37, 0.74);
-  --panel-strong: rgba(17, 26, 39, 0.92);
-  --line: rgba(255, 255, 255, 0.08);
-  --text: #edf3ff;
-  --muted: #a7b4c8;
-  --gold: #d4af37;
-  --gold-2: #f5d77d;
-  --blue: #4c8df7;
-  --green: #2cc88a;
-  --red: #ef5c5c;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
-}
-
-html, body {
-  margin: 0;
-  min-height: 100%;
-  font-family: "Segoe UI", Tahoma, sans-serif;
-  background:
-    radial-gradient(circle at top, rgba(76, 141, 247, 0.18), transparent 30%),
-    linear-gradient(135deg, var(--bg), var(--bg-2));
-  color: var(--text);
-}
-
-body {
-  min-height: 100vh;
-}
-
-button, input, select {
-  font: inherit;
-}
-
-button {
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-.screen {
-  display: none;
-}
-
-.screen.active {
-  display: block;
-}
-
-.auth-shell {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-}
-
-.auth-panel {
-  width: min(100%, 460px);
-  padding: 32px 28px;
-  border-radius: 24px;
-}
-
-.glass {
-  background: rgba(17, 26, 39, 0.7);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-}
-
-.brand-block {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.brand-badge {
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  border-radius: 22px;
-  font-size: 2rem;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.28), rgba(76, 141, 247, 0.18));
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  margin: 0 auto 16px;
-}
-
-.brand-block h1 {
-  margin: 0 0 8px;
-  font-size: clamp(2rem, 4vw, 2.6rem);
-  color: var(--gold-2);
-}
-
-.brand-block p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.7;
-}
-
-.login-form {
-  display: grid;
-  gap: 16px;
-}
-
-.field {
-  display: grid;
-  gap: 8px;
-}
-
-.login-form label,
-.card-form label {
-  color: var(--muted);
-  font-weight: 600;
-}
-
-input, select {
-  width: 100%;
-  background: rgba(7, 17, 29, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 12px 14px;
-  color: var(--text);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: rgba(212, 175, 55, 0.7);
-  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.12);
-}
-
-.remember-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--muted);
-}
-
-.primary-btn, .secondary-btn, .danger-btn, .action-btn {
-  border: none;
-  border-radius: 12px;
-  padding: 12px 18px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.primary-btn {
-  background: linear-gradient(135deg, var(--gold), var(--gold-2));
-  color: #101820;
-}
-
-.secondary-btn {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text);
-  border: 1px solid var(--line);
-}
-
-.danger-btn {
-  background: rgba(239, 92, 92, 0.14);
-  color: #ffd7d7;
-  border: 1px solid rgba(239, 92, 92, 0.3);
-}
-
-.login-message {
-  min-height: 22px;
-  color: #ffcfcf;
-  font-size: 0.95rem;
-  text-align: center;
-}
-
-#app-screen {
-  display: flex;
-  min-height: 100vh;
-}
-
-.sidebar {
-  width: 260px;
-  padding: 20px 16px;
-  border-radius: 0 24px 24px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-left: 1px solid var(--line);
-}
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 22px;
-  padding: 8px 6px;
-}
-
-.mini-logo {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(76, 141, 247, 0.18));
-  border: 1px solid rgba(212, 175, 55, 0.35);
-}
-
-.sidebar-header h2 {
-  margin: 0 0 4px;
-  font-size: 1.05rem;
-}
-
-.sidebar-header small {
-  color: var(--muted);
-}
-
-.nav {
-  display: grid;
-  gap: 8px;
-}
-
-.nav-item {
-  width: 100%;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--muted);
-  text-align: right;
-  border-radius: 12px;
-  padding: 12px 14px;
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-.nav-item.active {
-  background: rgba(76, 141, 247, 0.12);
-  border-color: rgba(76, 141, 247, 0.25);
-  color: var(--text);
-}
-
-.sidebar-footer {
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
-}
-
-.main-content {
-  flex: 1;
-  padding: 22px;
-}
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 18px 22px;
-  border-radius: 18px;
-  margin-bottom: 22px;
-}
-
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  font-size: 0.72rem;
-  margin: 0 0 4px;
-}
-
-.topbar h3 {
-  margin: 0;
-  font-size: 1.7rem;
-  color: var(--gold-2);
-}
-
-.topbar-date {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
-  color: var(--muted);
-}
-
-.page-section {
-  display: none;
-}
-
-.page-section.active {
-  display: block;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(150px, 1fr));
-  gap: 18px;
-  margin-bottom: 22px;
-}
-
-.stat-card {
-  border-radius: 22px;
-  padding: 22px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.stat-card span {
-  color: var(--muted);
-}
-
-.stat-card strong {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-}
-
-.accent-blue { border-color: rgba(76, 141, 247, 0.34); }
-.accent-gold { border-color: rgba(212, 175, 55, 0.28); }
-.accent-green { border-color: rgba(44, 200, 138, 0.3); }
-.accent-red { border-color: rgba(239, 92, 92, 0.33); }
-
-.panel-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(260px, 1fr));
-  gap: 18px;
-}
-
-.panel, .table-wrap, .card-form, .task-list, .report-box {
-  border-radius: 20px;
-  padding: 20px;
-}
-
-.panel-head, .section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.section-header {
-  margin-top: 8px;
-  margin-bottom: 18px;
-}
-
-.section-header h3, .panel-head h4 {
-  margin: 0;
-}
-
-.list-box {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 12px;
-}
-
-.list-box li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.card-form {
-  margin-bottom: 22px;
-}
-
-.form-grid {
-  display: grid;
-  gap: 16px;
-}
-
-.two-columns {
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
-}
-
-.form-actions {
-  margin-top: 18px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.small {
-  padding: 10px 14px;
-  font-size: 0.9rem;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 14px 12px;
-  text-align: right;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-th {
-  color: var(--muted);
-  font-weight: 700;
-}
-
-.table-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-}
-
-.action-btn {
-  padding: 8px 10px;
-  font-size: 0.82rem;
-  cursor: pointer;
-}
-
-.edit-btn {
-  background: rgba(76, 141, 247, 0.12);
-  color: #d9e7ff;
-}
-
-.delete-btn {
-  background: rgba(239, 92, 92, 0.12);
-  color: #ffd7d7;
-}
-
-.task-list {
-  display: grid;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.task-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 14px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.task-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.priority-pill {
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.priority-high { background: rgba(239, 92, 92, 0.12); color: #ffb3b3; }
-.priority-medium { background: rgba(212, 175, 55, 0.12); color: #ffe2a1; }
-.priority-low { background: rgba(44, 200, 138, 0.12); color: #baf5d7; }
-
-.reports-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(180px, 1fr));
-  gap: 18px;
-}
-
-.report-box {
-  min-height: 140px;
-  display: grid;
-  place-items: center;
-  text-align: center;
-}
-
-.report-box h4 {
-  margin: 0 0 10px;
-  color: var(--muted);
-}
-
-.report-box p {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-
-.empty-state {
-  color: var(--muted);
-  padding: 14px 8px;
-}
-
-@media (max-width: 980px) {
-  #app-screen {
-    display: block;
+const STORAGE_KEY = 'lawyer_agenda_data_v1';
+const LAWYER_LOGIN_KEY = 'lawyer_agenda_lawyer_login_v1';
+const CLIENT_LOGIN_KEY = 'lawyer_agenda_client_login_v1';
+const ROLE_KEY = 'lawyer_agenda_role_v1';
+
+const DEFAULTS = {
+  lawyer: {
+    username: 'محمد النزال',
+    password: '6503536'
+  },
+  client: {
+    username: 'موكل 1',
+    password: '123456'
+  }
+};
+
+const state = {
+  role: 'portal',
+  clients: [],
+  cases: [],
+  sessions: [],
+  tasks: []
+};
+
+const elements = {
+  portalScreen: document.getElementById('portal-screen'),
+  lawyerScreen: document.getElementById('lawyer-screen'),
+  clientScreen: document.getElementById('client-screen'),
+  lawyerLoginForm: document.getElementById('lawyer-login-form'),
+  clientLoginForm: document.getElementById('client-login-form'),
+  lawyerLoginMessage: document.getElementById('lawyer-login-message'),
+  clientLoginMessage: document.getElementById('client-login-message'),
+  lawyerUser: document.getElementById('lawyer-user'),
+  lawyerPass: document.getElementById('lawyer-pass'),
+  clientUser: document.getElementById('client-user'),
+  clientPass: document.getElementById('client-pass'),
+  logoutBtn: document.getElementById('logout-btn'),
+  clientLogoutBtn: document.getElementById('client-logout-btn'),
+  sidebarUserName: document.getElementById('sidebar-user-name'),
+  currentDate: document.getElementById('current-date'),
+  clientUserLabel: document.getElementById('client-user-label'),
+  navItems: [...document.querySelectorAll('.nav-item')],
+  sections: [...document.querySelectorAll('.page-section')],
+  statClients: document.getElementById('stat-clients'),
+  statCases: document.getElementById('stat-cases'),
+  statSessions: document.getElementById('stat-sessions'),
+  statTasks: document.getElementById('stat-tasks'),
+  recentClients: document.getElementById('recent-clients'),
+  upcomingSessions: document.getElementById('upcoming-sessions'),
+  clientsTableBody: document.getElementById('clients-table-body'),
+  casesTableBody: document.getElementById('cases-table-body'),
+  sessionsTableBody: document.getElementById('sessions-table-body'),
+  tasksList: document.getElementById('tasks-list'),
+  reportCasesSummary: document.getElementById('report-cases-summary'),
+  reportSessionsSummary: document.getElementById('report-sessions-summary'),
+  reportTasksSummary: document.getElementById('report-tasks-summary'),
+  clientForm: document.getElementById('client-form'),
+  clientId: document.getElementById('client-id'),
+  clientName: document.getElementById('client-name'),
+  clientFile: document.getElementById('client-file'),
+  clientPhone: document.getElementById('client-phone'),
+  clientCaseType: document.getElementById('client-case-type'),
+  cancelClient: document.getElementById('cancel-client'),
+  newClientBtn: document.getElementById('new-client-btn'),
+  caseForm: document.getElementById('case-form'),
+  caseId: document.getElementById('case-id'),
+  caseClient: document.getElementById('case-client'),
+  caseTitle: document.getElementById('case-title'),
+  caseType: document.getElementById('case-type'),
+  caseStatus: document.getElementById('case-status'),
+  cancelCase: document.getElementById('cancel-case'),
+  newCaseBtn: document.getElementById('new-case-btn'),
+  sessionForm: document.getElementById('session-form'),
+  sessionId: document.getElementById('session-id'),
+  sessionClient: document.getElementById('session-client'),
+  sessionDate: document.getElementById('session-date'),
+  sessionTime: document.getElementById('session-time'),
+  sessionType: document.getElementById('session-type'),
+  cancelSession: document.getElementById('cancel-session'),
+  newSessionBtn: document.getElementById('new-session-btn'),
+  taskForm: document.getElementById('task-form'),
+  taskId: document.getElementById('task-id'),
+  taskTitle: document.getElementById('task-title'),
+  taskPriority: document.getElementById('task-priority'),
+  cancelTask: document.getElementById('cancel-task'),
+  newTaskBtn: document.getElementById('new-task-btn'),
+  clientProfile: document.getElementById('client-profile'),
+  clientCasesList: document.getElementById('client-cases-list'),
+  clientSessionsList: document.getElementById('client-sessions-list'),
+  clientActiveCases: document.getElementById('client-active-cases'),
+  clientNextSessions: document.getElementById('client-next-sessions'),
+  clientPendingTasks: document.getElementById('client-pending-tasks')
+};
+
+function generateId(prefix) {
+  if (window.crypto && window.crypto.randomUUID) {
+    return `${prefix}-${window.crypto.randomUUID()}`;
+  }
+  return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function getStatePayload() {
+  return {
+    clients: state.clients,
+    cases: state.cases,
+    sessions: state.sessions,
+    tasks: state.tasks
+  };
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(getStatePayload()));
+}
+
+function loadData() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+
+  if (!saved) {
+    state.clients = [
+      { id: 'client-1', name: 'أحمد محمد', fileNo: 'MF-101', phone: '9665000001', caseType: 'مدنية' },
+      { id: 'client-2', name: 'سارة علي', fileNo: 'MF-102', phone: '9665000002', caseType: 'شرعية' },
+      { id: 'client-3', name: 'خالد حسن', fileNo: 'MF-103', phone: '9665000003', caseType: 'جنائية' }
+    ];
+
+    state.cases = [
+      { id: 'case-1', clientId: 'client-1', title: 'دعوى استحقاق', type: 'مدنية', status: 'نشطة' },
+      { id: 'case-2', clientId: 'client-2', title: 'دراسة دعوى شرعية', type: 'شرعية', status: 'معلقة' },
+      { id: 'case-3', clientId: 'client-3', title: 'قضية جنائية', type: 'جنائية', status: 'نشطة' }
+    ];
+
+    state.sessions = [
+      { id: 'session-1', clientId: 'client-1', date: getTodayOffset(1), time: '09:30', type: 'تمهيدية' },
+      { id: 'session-2', clientId: 'client-2', date: getTodayOffset(3), time: '14:00', type: 'استماع' },
+      { id: 'session-3', clientId: 'client-1', date: getTodayOffset(5), time: '16:30', type: 'مرافعة' }
+    ];
+
+    state.tasks = [
+      { id: 'task-1', title: 'مراجعة مستندات الموكل أحمد', priority: 'عالية', done: false },
+      { id: 'task-2', title: 'إعداد مذكرة شرعية', priority: 'متوسطة', done: false },
+      { id: 'task-3', title: 'تحديث ملف القضية', priority: 'منخفضة', done: true }
+    ];
+
+    saveData();
+    return;
   }
 
-  .sidebar {
-    width: 100%;
-    border-radius: 0 0 20px 20px;
-    border-left: none;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .nav {
-    grid-template-columns: repeat(3, minmax(120px, 1fr));
-  }
-
-  .stats-grid, .panel-grid, .reports-grid, .two-columns {
-    grid-template-columns: 1fr;
+  try {
+    const parsed = JSON.parse(saved);
+    state.clients = Array.isArray(parsed.clients) ? parsed.clients : [];
+    state.cases = Array.isArray(parsed.cases) ? parsed.cases : [];
+    state.sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
+    state.tasks = Array.isArray(parsed.tasks) ? parsed.tasks : [];
+  } catch (error) {
+    console.error('Failed to parse localStorage data', error);
+    state.clients = [];
+    state.cases = [];
+    state.sessions = [];
+    state.tasks = [];
   }
 }
 
-@media (max-width: 560px) {
-  .main-content {
-    padding: 16px;
+function getTodayOffset(offsetDays) {
+  const date = new Date();
+  date.setDate(date.getDate() + offsetDays);
+  return date.toISOString().split('T')[0];
+}
+
+function setCurrentDate() {
+  if (!elements.currentDate) return;
+  const now = new Date();
+  elements.currentDate.textContent = now.toLocaleDateString('ar-SA', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+function showPortal() {
+  if (elements.portalScreen) elements.portalScreen.classList.add('active');
+  if (elements.lawyerScreen) elements.lawyerScreen.classList.remove('active');
+  if (elements.clientScreen) elements.clientScreen.classList.remove('active');
+  state.role = 'portal';
+  localStorage.setItem(ROLE_KEY, 'portal');
+}
+
+function showLawyerDashboard() {
+  if (elements.portalScreen) elements.portalScreen.classList.remove('active');
+  if (elements.clientScreen) elements.clientScreen.classList.remove('active');
+  if (elements.lawyerScreen) elements.lawyerScreen.classList.add('active');
+  state.role = 'lawyer';
+  localStorage.setItem(ROLE_KEY, 'lawyer');
+  renderAll();
+}
+
+function showClientDashboard() {
+  if (elements.portalScreen) elements.portalScreen.classList.remove('active');
+  if (elements.lawyerScreen) elements.lawyerScreen.classList.remove('active');
+  if (elements.clientScreen) elements.clientScreen.classList.add('active');
+  state.role = 'client';
+  localStorage.setItem(ROLE_KEY, 'client');
+  renderClientDashboard();
+}
+
+function checkSavedRole() {
+  const role = localStorage.getItem(ROLE_KEY);
+  if (role === 'lawyer' && localStorage.getItem(LAWYER_LOGIN_KEY) === 'true') {
+    elements.sidebarUserName.textContent = DEFAULTS.lawyer.username;
+    showLawyerDashboard();
+    return;
   }
 
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
+  if (role === 'client' && localStorage.getItem(CLIENT_LOGIN_KEY) === 'true') {
+    elements.clientUserLabel.textContent = DEFAULTS.client.username;
+    showClientDashboard();
+    return;
   }
 
-  .nav {
-    grid-template-columns: 1fr 1fr;
+  showPortal();
+}
+
+function populateClientSelects() {
+  const options = state.clients.map((client) => `<option value="${client.id}">${client.name}</option>`).join('');
+  if (elements.caseClient) elements.caseClient.innerHTML = options || '<option value="">لا يوجد موكل</option>';
+  if (elements.sessionClient) elements.sessionClient.innerHTML = options || '<option value="">لا يوجد موكل</option>';
+}
+
+function renderStats() {
+  if (elements.statClients) elements.statClients.textContent = String(state.clients.length);
+  if (elements.statCases) elements.statCases.textContent = String(state.cases.length);
+  if (elements.statSessions) elements.statSessions.textContent = String(state.sessions.length);
+  if (elements.statTasks) elements.statTasks.textContent = String(state.tasks.filter((task) => !task.done).length);
+}
+
+function renderRecentClients() {
+  const clients = state.clients.slice(0, 4);
+  if (!clients.length) {
+    if (elements.recentClients) elements.recentClients.innerHTML = '<li class="empty-state">لا يوجد موكلين حتى الآن</li>';
+    return;
+  }
+
+  if (elements.recentClients) {
+    elements.recentClients.innerHTML = clients.map((client) => `
+      <li>
+        <span>${client.name}</span>
+        <small>${client.fileNo}</small>
+      </li>
+    `).join('');
   }
 }
+
+function renderUpcomingSessions() {
+  const sessions = [...state.sessions]
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .slice(0, 4);
+
+  if (!sessions.length) {
+    if (elements.upcomingSessions) elements.upcomingSessions.innerHTML = '<li class="empty-state">لا توجد جلسات قادمة</li>';
+    return;
+  }
+
+  if (elements.upcomingSessions) {
+    elements.upcomingSessions.innerHTML = sessions.map((session) => {
+      const client = state.clients.find((item) => item.id === session.clientId);
+      return `
+        <li>
+          <span>${client ? client.name : 'موكل غير معروف'}</span>
+          <small>${session.date} | ${session.time}</small>
+        </li>
+      `;
+    }).join('');
+  }
+}
+
+function renderClientsTable() {
+  if (!state.clients.length) {
+    if (elements.clientsTableBody) elements.clientsTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">لا توجد بيانات</td></tr>';
+    return;
+  }
+
+  if (elements.clientsTableBody) {
+    elements.clientsTableBody.innerHTML = state.clients.map((client) => `
+      <tr>
+        <td>${client.name}</td>
+        <td>${client.fileNo}</td>
+        <td>${client.phone || '—'}</td>
+        <td>${client.caseType || '—'}</td>
+        <td>
+          <div class="table-actions">
+            <button class="action-btn edit-btn" data-client-edit="${client.id}">تعديل</button>
+            <button class="action-btn delete-btn" data-client-delete="${client.id}">حذف</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+}
+
+function renderCasesTable() {
+  if (!state.cases.length) {
+    if (elements.casesTableBody) elements.casesTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">لا توجد بيانات</td></tr>';
+    return;
+  }
+
+  if (elements.casesTableBody) {
+    elements.casesTableBody.innerHTML = state.cases.map((caseItem) => {
+      const client = state.clients.find((item) => item.id === caseItem.clientId);
+      return `
+        <tr>
+          <td>${caseItem.title}</td>
+          <td>${client ? client.name : '—'}</td>
+          <td>${caseItem.type}</td>
+          <td>${caseItem.status}</td>
+          <td>
+            <div class="table-actions">
+              <button class="action-btn edit-btn" data-case-edit="${caseItem.id}">تعديل</button>
+              <button class="action-btn delete-btn" data-case-delete="${caseItem.id}">حذف</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+}
+
+function renderSessionsTable() {
+  if (!state.sessions.length) {
+    if (elements.sessionsTableBody) elements.sessionsTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">لا توجد بيانات</td></tr>';
+    return;
+  }
+
+  if (elements.sessionsTableBody) {
+    elements.sessionsTableBody.innerHTML = state.sessions.map((session) => {
+      const client = state.clients.find((item) => item.id === session.clientId);
+      return `
+        <tr>
+          <td>${client ? client.name : '—'}</td>
+          <td>${session.date}</td>
+          <td>${session.time}</td>
+          <td>${session.type || '—'}</td>
+          <td>
+            <div class="table-actions">
+              <button class="action-btn edit-btn" data-session-edit="${session.id}">تعديل</button>
+              <button class="action-btn delete-btn" data-session-delete="${session.id}">حذف</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+}
+
+function renderTasks() {
+  if (!state.tasks.length) {
+    if (elements.tasksList) elements.tasksList.innerHTML = '<div class="empty-state">لا توجد مهام</div>';
+    return;
+  }
+
+  if (elements.tasksList) {
+    elements.tasksList.innerHTML = state.tasks.map((task) => `
+      <div class="task-item">
+        <div class="task-meta">
+          <input type="checkbox" data-task-done="${task.id}" ${task.done ? 'checked' : ''} />
+          <div>
+            <strong style="text-decoration: ${task.done ? 'line-through' : 'none'};">${task.title}</strong>
+          </div>
+        </div>
+        <div class="table-actions">
+          <span class="priority-pill priority-${task.priority === 'عالية' ? 'high' : task.priority === 'متوسطة' ? 'medium' : 'low'}">${task.priority}</span>
+          <button class="action-btn delete-btn" data-task-delete="${task.id}">حذف</button>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function renderReports() {
+  if (elements.reportCasesSummary) elements.reportCasesSummary.textContent = `${state.cases.length} قضية`;
+  if (elements.reportSessionsSummary) elements.reportSessionsSummary.textContent = `${state.sessions.length} جلسة`;
+  if (elements.reportTasksSummary) elements.reportTasksSummary.textContent = `${state.tasks.length} مهمة`;
+}
+
+function renderAll() {
+  if (state.role === 'lawyer') {
+    populateClientSelects();
+    renderStats();
+    renderRecentClients();
+    renderUpcomingSessions();
+    renderClientsTable();
+    renderCasesTable();
+    renderSessionsTable();
+    renderTasks();
+    renderReports();
+  }
+}
+
+function renderClientDashboard() {
+  const clientName = DEFAULTS.client.username;
+  if (elements.clientUserLabel) elements.clientUserLabel.textContent = clientName;
+
+  const clientCases = state.cases.filter((caseItem) => caseItem.clientId === 'client-1');
+  const clientSessions = state.sessions.filter((session) => session.clientId === 'client-1');
+  const pendingTasks = state.tasks.filter((task) => !task.done);
+
+  if (elements.clientActiveCases) elements.clientActiveCases.textContent = String(clientCases.length);
+  if (elements.clientNextSessions) elements.clientNextSessions.textContent = String(clientSessions.length);
+  if (elements.clientPendingTasks) elements.clientPendingTasks.textContent = String(pendingTasks.length);
+
+  const client = state.clients.find((item) => item.id === 'client-1') || {
+    name: 'أحمد محمد',
+    fileNo: 'MF-101',
+    phone: '9665000001',
+    caseType: 'مدنية'
+  };
+
+  if (elements.clientProfile) {
+    elements.clientProfile.innerHTML = `
+      <div class="profile-row"><span>اسم الموكل</span><strong>${client.name}</strong></div>
+      <div class="profile-row"><span>رقم الملف</span><strong>${client.fileNo}</strong></div>
+      <div class="profile-row"><span>رقم الهاتف</span><strong>${client.phone}</strong></div>
+      <div class="profile-row"><span>نوع القضية</span><strong>${client.caseType}</strong></div>
+    `;
+  }
+
+  if (elements.clientCasesList) {
+    elements.clientCasesList.innerHTML = clientCases.length
+      ? clientCases.map((item) => `
+          <div class="list-item-row">
+            <span>${item.title}</span>
+            <small>${item.status}</small>
+          </div>
+        `).join('')
+      : '<div class="empty-state">لا توجد قضايا</div>';
+  }
+
+  if (elements.clientSessionsList) {
+    elements.clientSessionsList.innerHTML = clientSessions.length
+      ? clientSessions.map((item) => `
+          <div class="list-item-row">
+            <span>${item.type}</span>
+            <small>${item.date} - ${item.time}</small>
+          </div>
+        `).join('')
+      : '<div class="empty-state">لا توجد جلسات</div>';
+  }
+}
+
+function resetClientForm() {
+  if (elements.clientForm) elements.clientForm.reset();
+  if (elements.clientId) elements.clientId.value = '';
+}
+
+function resetCaseForm() {
+  if (elements.caseForm) elements.caseForm.reset();
+  if (elements.caseId) elements.caseId.value = '';
+}
+
+function resetSessionForm() {
+  if (elements.sessionForm) elements.sessionForm.reset();
+  if (elements.sessionId) elements.sessionId.value = '';
+}
+
+function resetTaskForm() {
+  if (elements.taskForm) elements.taskForm.reset();
+  if (elements.taskId) elements.taskId.value = '';
+}
+
+function handleClientSubmit(event) {
+  event.preventDefault();
+
+  if (!elements.clientForm) return;
+
+  const id = elements.clientId.value || generateId('client');
+  const payload = {
+    id,
+    name: elements.clientName.value.trim(),
+    fileNo: elements.clientFile.value.trim(),
+    phone: elements.clientPhone.value.trim(),
+    caseType: elements.clientCaseType.value.trim()
+  };
+
+  if (!payload.name || !payload.fileNo) {
+    alert('يرجى إدخال اسم الموكل ورقم الملف');
+    return;
+  }
+
+  const existingIndex = state.clients.findIndex((item) => item.id === id);
+  if (existingIndex >= 0) {
+    state.clients[existingIndex] = payload;
+  } else {
+    state.clients.push(payload);
+  }
+
+  saveData();
+  renderAll();
+  resetClientForm();
+}
+
+function handleCaseSubmit(event) {
+  event.preventDefault();
+  if (!elements.caseForm) return;
+
+  const id = elements.caseId.value || generateId('case');
+  const payload = {
+    id,
+    clientId: elements.caseClient.value,
+    title: elements.caseTitle.value.trim(),
+    type: elements.caseType.value,
+    status: elements.caseStatus.value
+  };
+
+  if (!payload.clientId || !payload.title) {
+    alert('يرجى اختيار الموكل وكتابة عنوان القضية');
+    return;
+  }
+
+  const existingIndex = state.cases.findIndex((item) => item.id === id);
+  if (existingIndex >= 0) {
+    state.cases[existingIndex] = payload;
+  } else {
+    state.cases.push(payload);
+  }
+
+  saveData();
+  renderAll();
+  resetCaseForm();
+}
+
+function handleSessionSubmit(event) {
+  event.preventDefault();
+  if (!elements.sessionForm) return;
+
+  const id = elements.sessionId.value || generateId('session');
+  const payload = {
+    id,
+    clientId: elements.sessionClient.value,
+    date: elements.sessionDate.value,
+    time: elements.sessionTime.value,
+    type: elements.sessionType.value.trim() || 'جلسة'
+  };
+
+  if (!payload.clientId || !payload.date || !payload.time) {
+    alert('يرجى اختيار الموكل وتاريخ/وقت الجلسة');
+    return;
+  }
+
+  const existingIndex = state.sessions.findIndex((item) => item.id === id);
+  if (existingIndex >= 0) {
+    state.sessions[existingIndex] = payload;
+  } else {
+    state.sessions.push(payload);
+  }
+
+  saveData();
+  renderAll();
+  resetSessionForm();
+}
+
+function handleTaskSubmit(event) {
+  event.preventDefault();
+  if (!elements.taskForm) return;
+
+  const id = elements.taskId.value || generateId('task');
+  const payload = {
+    id,
+    title: elements.taskTitle.value.trim(),
+    priority: elements.taskPriority.value,
+    done: false
+  };
+
+  if (!payload.title) {
+    alert('يرجى كتابة عنوان المهمة');
+    return;
+  }
+
+  const existingIndex = state.tasks.findIndex((item) => item.id === id);
+  if (existingIndex >= 0) {
+    state.tasks[existingIndex] = {
+      ...state.tasks[existingIndex],
+      title: payload.title,
+      priority: payload.priority
+    };
+  } else {
+    state.tasks.push(payload);
+  }
+
+  saveData();
+  renderAll();
+  resetTaskForm();
+}
+
+function loginLawyer(event) {
+  event.preventDefault();
+
+  const username = elements.lawyerUser.value.trim();
+  const password = elements.lawyerPass.value.trim();
+
+  if (username === DEFAULTS.lawyer.username && password === DEFAULTS.lawyer.password) {
+    localStorage.setItem(LAWYER_LOGIN_KEY, 'true');
+    localStorage.setItem(ROLE_KEY, 'lawyer');
+    if (elements.sidebarUserName) elements.sidebarUserName.textContent = username;
+    if (elements.lawyerLoginMessage) {
+      elements.lawyerLoginMessage.textContent = 'تم تسجيل الدخول بنجاح';
+      elements.lawyerLoginMessage.style.color = '#baf5d7';
+    }
+    showLawyerDashboard();
+    return;
+  }
+
+  if (elements.lawyerLoginMessage) {
+    elements.lawyerLoginMessage.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+    elements.lawyerLoginMessage.style.color = '#ffcfcf';
+  }
+}
+
+function loginClient(event) {
+  event.preventDefault();
+
+  const username = elements.clientUser.value.trim();
+  const password = elements.clientPass.value.trim();
+
+  if (username === DEFAULTS.client.username && password === DEFAULTS.client.password) {
+    localStorage.setItem(CLIENT_LOGIN_KEY, 'true');
+    localStorage.setItem(ROLE_KEY, 'client');
+    if (elements.clientUserLabel) elements.clientUserLabel.textContent = username;
+    if (elements.clientLoginMessage) {
+      elements.clientLoginMessage.textContent = 'تم تسجيل الدخول بنجاح';
+      elements.clientLoginMessage.style.color = '#baf5d7';
+    }
+    showClientDashboard();
+    return;
+  }
+
+  if (elements.clientLoginMessage) {
+    elements.clientLoginMessage.textContent = 'اسم العميل أو كلمة المرور غير صحيحة';
+    elements.clientLoginMessage.style.color = '#ffcfcf';
+  }
+}
+
+function logout() {
+  localStorage.setItem(LAWYER_LOGIN_KEY, 'false');
+  localStorage.setItem(CLIENT_LOGIN_KEY, 'false');
+  localStorage.setItem(ROLE_KEY, 'portal');
+  if (elements.lawyerLoginMessage) elements.lawyerLoginMessage.textContent = '';
+  if (elements.clientLoginMessage) elements.clientLoginMessage.textContent = '';
+  showPortal();
+}
+
+function attachEvents() {
+  if (elements.lawyerLoginForm) elements.lawyerLoginForm.addEventListener('submit', loginLawyer);
+  if (elements.clientLoginForm) elements.clientLoginForm.addEventListener('submit', loginClient);
+
+  if (elements.logoutBtn) elements.logoutBtn.addEventListener('click', logout);
+  if (elements.clientLogoutBtn) elements.clientLogoutBtn.addEventListener('click', logout);
+
+  if (elements.navItems) {
+    elements.navItems.forEach((button) => {
+      button.addEventListener('click', () => showSection(button.dataset.section));
+    });
+  }
+
+  if (elements.clientForm) elements.clientForm.addEventListener('submit', handleClientSubmit);
+  if (elements.caseForm) elements.caseForm.addEventListener('submit', handleCaseSubmit);
+  if (elements.sessionForm) elements.sessionForm.addEventListener('submit', handleSessionSubmit);
+  if (elements.taskForm) elements.taskForm.addEventListener('submit', handleTaskSubmit);
+
+  if (elements.cancelClient) elements.cancelClient.addEventListener('click', resetClientForm);
+  if (elements.cancelCase) elements.cancelCase.addEventListener('click', resetCaseForm);
+  if (elements.cancelSession) elements.cancelSession.addEventListener('click', resetSessionForm);
+  if (elements.cancelTask) elements.cancelTask.addEventListener('click', resetTaskForm);
+
+  if (elements.newClientBtn) {
+    elements.newClientBtn.addEventListener('click', () => {
+      resetClientForm();
+      showSection('clients');
+    });
+  }
+
+  if (elements.newCaseBtn) {
+    elements.newCaseBtn.addEventListener('click', () => {
+      resetCaseForm();
+      showSection('cases');
+    });
+  }
+
+  if (elements.newSessionBtn) {
+    elements.newSessionBtn.addEventListener('click', () => {
+      resetSessionForm();
+      showSection('sessions');
+    });
+  }
+
+  if (elements.newTaskBtn) {
+    elements.newTaskBtn.addEventListener('click', () => {
+      resetTaskForm();
+      showSection('tasks');
+    });
+  }
+
+  document.addEventListener('click', (event) => {
+    const clientEdit = event.target.closest('[data-client-edit]');
+    if (clientEdit) {
+      const client = state.clients.find((item) => item.id === clientEdit.dataset.clientEdit);
+      if (!client) return;
+      if (elements.clientId) elements.clientId.value = client.id;
+      if (elements.clientName) elements.clientName.value = client.name;
+      if (elements.clientFile) elements.clientFile.value = client.fileNo;
+      if (elements.clientPhone) elements.clientPhone.value = client.phone;
+      if (elements.clientCaseType) elements.clientCaseType.value = client.caseType;
+      showSection('clients');
+    }
+
+    const clientDelete = event.target.closest('[data-client-delete]');
+    if (clientDelete) {
+      const id = clientDelete.dataset.clientDelete;
+      if (confirm('هل أنت متأكد من حذف هذا الموكل؟')) {
+        state.clients = state.clients.filter((item) => item.id !== id);
+        saveData();
+        renderAll();
+      }
+    }
+
+    const caseEdit = event.target.closest('[data-case-edit]');
+    if (caseEdit) {
+      const caseItem = state.cases.find((item) => item.id === caseEdit.dataset.caseEdit);
+      if (!caseItem) return;
+      if (elements.caseId) elements.caseId.value = caseItem.id;
+      if (elements.caseClient) elements.caseClient.value = caseItem.clientId;
+      if (elements.caseTitle) elements.caseTitle.value = caseItem.title;
+      if (elements.caseType) elements.caseType.value = caseItem.type;
+      if (elements.caseStatus) elements.caseStatus.value = caseItem.status;
+      showSection('cases');
+    }
+
+    const caseDelete = event.target.closest('[data-case-delete]');
+    if (caseDelete) {
+      const id = caseDelete.dataset.caseDelete;
+      if (confirm('هل أنت متأكد من حذف هذه القضية؟')) {
+        state.cases = state.cases.filter((item) => item.id !== id);
+        saveData();
+        renderAll();
+      }
+    }
+
+    const sessionEdit = event.target.closest('[data-session-edit]');
+    if (sessionEdit) {
+      const session = state.sessions.find((item) => item.id === sessionEdit.dataset.sessionEdit);
+      if (!session) return;
+      if (elements.sessionId) elements.sessionId.value = session.id;
+      if (elements.sessionClient) elements.sessionClient.value = session.clientId;
+      if (elements.sessionDate) elements.sessionDate.value = session.date;
+      if (elements.sessionTime) elements.sessionTime.value = session.time;
+      if (elements.sessionType) elements.sessionType.value = session.type;
+      showSection('sessions');
+    }
+
+    const sessionDelete = event.target.closest('[data-session-delete]');
+    if (sessionDelete) {
+      const id = sessionDelete.dataset.sessionDelete;
+      if (confirm('هل أنت متأكد من حذف هذه الجلسة؟')) {
+        state.sessions = state.sessions.filter((item) => item.id !== id);
+        saveData();
+        renderAll();
+      }
+    }
+
+    const taskDelete = event.target.closest('[data-task-delete]');
+    if (taskDelete) {
+      const id = taskDelete.dataset.taskDelete;
+      if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
+        state.tasks = state.tasks.filter((item) => item.id !== id);
+        saveData();
+        renderAll();
+      }
+    }
+
+    const taskDone = event.target.closest('[data-task-done]');
+    if (taskDone) {
+      const task = state.tasks.find((item) => item.id === taskDone.dataset.taskDone);
+      if (task) {
+        task.done = taskDone.checked;
+        saveData();
+        renderAll();
+      }
+    }
+  });
+}
+
+function showSection(name) {
+  const sectionEls = document.querySelectorAll('.page-section');
+  sectionEls.forEach((section) => {
+    section.classList.toggle('active', section.id === name);
+  });
+
+  const navEls = document.querySelectorAll('.nav-item');
+  navEls.forEach((button) => {
+    button.classList.toggle('active', button.dataset.section === name);
+  });
+}
+
+function initialize() {
+  setCurrentDate();
+  loadData();
+  attachEvents();
+  checkSavedRole();
+  if (state.role === 'lawyer') {
+    renderAll();
+  }
+  if (state.role === 'client') {
+    renderClientDashboard();
+  }
+}
+
+initialize();
+
+

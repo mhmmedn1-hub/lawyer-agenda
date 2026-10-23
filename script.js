@@ -4,43 +4,70 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>أجندة المحامي | Lawyer Agenda</title>
-    <meta name="description" content="نظام إدارة محامي احترافي لإدارة الموكلين، القضايا، الجلسات، والملاحظات." />
+    <meta
+      name="description"
+      content="بوابة محامي وموكل احترافية لإدارة القضايا، الجلسات، المهام، والملاحظات."
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="login-screen" class="screen active">
-      <div class="auth-shell">
-        <div class="auth-panel glass">
+    <div id="portal-screen" class="screen active">
+      <div class="portal-shell">
+        <div class="portal-panel glass">
           <div class="brand-block">
             <div class="brand-badge">⚖️</div>
             <h1>أجندة المحامي</h1>
-            <p>نظام متكامل لإدارة القضايا، الموكلين، والجلسات</p>
+            <p>بوابة محامي وموكل متكاملة لإدارة القضايا والمواعيد</p>
           </div>
 
-          <form id="login-form" class="login-form" novalidate>
-            <div class="field">
-              <label for="lawyer-user">اسم المستخدم</label>
-              <input id="lawyer-user" type="text" value="محمد النزال" placeholder="محمد النزال" autocomplete="username" required />
+          <div class="portal-grid">
+            <div class="role-card glass">
+              <div class="role-icon">👨‍💼</div>
+              <h2>بوابة المحامي</h2>
+              <p>إدارة الموكلين، القضايا، الجلسات، المهام، والتقارير.</p>
+
+              <form id="lawyer-login-form" class="role-form" novalidate>
+                <div class="field">
+                  <label for="lawyer-user">اسم المستخدم</label>
+                  <input id="lawyer-user" type="text" value="محمد النزال" placeholder="محمد النزال" autocomplete="username" />
+                </div>
+
+                <div class="field">
+                  <label for="lawyer-pass">كلمة المرور</label>
+                  <input id="lawyer-pass" type="password" value="6503536" placeholder="••••••••" autocomplete="current-password" />
+                </div>
+
+                <button type="submit" class="primary-btn full-width">دخول المحامي</button>
+                <div id="lawyer-login-message" class="login-message" aria-live="polite"></div>
+              </form>
             </div>
 
-            <div class="field">
-              <label for="lawyer-pass">كلمة المرور</label>
-              <input id="lawyer-pass" type="password" value="6503536" placeholder="••••••••" autocomplete="current-password" required />
-            </div>
+            <div class="role-card glass">
+              <div class="role-icon">🧑‍⚖️</div>
+              <h2>بوابة الموكل</h2>
+              <p>عرض القضية، الجلسات القادمة، الملاحظات، وتحديثات الملف.</p>
 
-            <div class="remember-row">
-              <input type="checkbox" id="remember-me" checked />
-              <label for="remember-me">تذكر بياناتي</label>
-            </div>
+              <form id="client-login-form" class="role-form" novalidate>
+                <div class="field">
+                  <label for="client-user">اسم العميل</label>
+                  <input id="client-user" type="text" value="موكل 1" placeholder="موكل 1" autocomplete="username" />
+                </div>
 
-            <button type="submit" class="primary-btn">دخول النظام</button>
-            <div id="login-message" class="login-message" aria-live="polite"></div>
-          </form>
+                <div class="field">
+                  <label for="client-pass">كلمة المرور</label>
+                  <input id="client-pass" type="password" value="123456" placeholder="••••••••" autocomplete="current-password" />
+                </div>
+
+                <button type="submit" class="secondary-btn full-width">دخول الموكل</button>
+                <div id="client-login-message" class="login-message" aria-live="polite"></div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div id="app-screen" class="screen">
+    <div id="lawyer-screen" class="screen">
       <aside class="sidebar glass">
         <div>
           <div class="sidebar-header">
@@ -56,7 +83,7 @@
             <button class="nav-item" data-section="clients">الموكلين</button>
             <button class="nav-item" data-section="cases">القضايا</button>
             <button class="nav-item" data-section="sessions">الجلسات</button>
-            <button class="nav-item" data-section="tasks">المهام</button>
+            <button class="nav-item" data-section="tasks">المه��م</button>
             <button class="nav-item" data-section="reports">التقارير</button>
           </nav>
         </div>
@@ -319,9 +346,60 @@
       </main>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <div id="client-screen" class="screen">
+      <div class="client-shell">
+        <header class="client-topbar glass">
+          <div>
+            <p class="eyebrow">بوابة الموكل</p>
+            <h3>مرحباً، <span id="client-user-label">الموكل</span></h3>
+          </div>
+          <button id="client-logout-btn" class="danger-btn">تسجيل الخروج</button>
+        </header>
+
+        <main class="client-dashboard">
+          <div class="client-overview glass">
+            <div class="overview-card accent-blue">
+              <span>القضايا النشطة</span>
+              <strong id="client-active-cases">0</strong>
+            </div>
+            <div class="overview-card accent-gold">
+              <span>الجلسات القادمة</span>
+              <strong id="client-next-sessions">0</strong>
+            </div>
+            <div class="overview-card accent-green">
+              <span>المهام</span>
+              <strong id="client-pending-tasks">0</strong>
+            </div>
+          </div>
+
+          <div class="client-panels">
+            <section class="glass client-panel">
+              <div class="panel-head">
+                <h4>ملفي الشخصي</h4>
+              </div>
+              <div id="client-profile" class="profile-box"></div>
+            </section>
+
+            <section class="glass client-panel">
+              <div class="panel-head">
+                <h4>قضيتي الحالية</h4>
+              </div>
+              <div id="client-cases-list" class="list-box"></div>
+            </section>
+
+            <section class="glass client-panel wide-panel">
+              <div class="panel-head">
+                <h4>الجلسات القادمة</h4>
+              </div>
+              <div id="client-sessions-list" class="list-box"></div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
+
+

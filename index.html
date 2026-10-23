@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>أجندة المحامي</title>
+    <title>أجندة المحامي | Lawyer Agenda</title>
+    <meta name="description" content="نظام إدارة محامي احترافي لإدارة الموكلين، القضايا، الجلسات، والملاحظات." />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -16,12 +17,16 @@
             <p>نظام متكامل لإدارة القضايا، الموكلين، والجلسات</p>
           </div>
 
-          <form id="login-form" class="login-form">
-            <label for="lawyer-user">اسم المستخدم</label>
-            <input id="lawyer-user" type="text" placeholder="محمد النزال" value="محمد النزال" required />
+          <form id="login-form" class="login-form" novalidate>
+            <div class="field">
+              <label for="lawyer-user">اسم المستخدم</label>
+              <input id="lawyer-user" type="text" value="محمد النزال" placeholder="محمد النزال" autocomplete="username" required />
+            </div>
 
-            <label for="lawyer-pass">كلمة المرور</label>
-            <input id="lawyer-pass" type="password" placeholder="••••••••" value="6503536" required />
+            <div class="field">
+              <label for="lawyer-pass">كلمة المرور</label>
+              <input id="lawyer-pass" type="password" value="6503536" placeholder="••••••••" autocomplete="current-password" required />
+            </div>
 
             <div class="remember-row">
               <input type="checkbox" id="remember-me" checked />
@@ -37,22 +42,24 @@
 
     <div id="app-screen" class="screen">
       <aside class="sidebar glass">
-        <div class="sidebar-header">
-          <div class="mini-logo">⚖️</div>
-          <div>
-            <h2>المحامي</h2>
-            <small id="sidebar-user-name">محمد النزال</small>
+        <div>
+          <div class="sidebar-header">
+            <div class="mini-logo">⚖️</div>
+            <div>
+              <h2>المحامي</h2>
+              <small id="sidebar-user-name">محمد النزال</small>
+            </div>
           </div>
-        </div>
 
-        <nav class="nav">
-          <button class="nav-item active" data-section="dashboard">لوحة القيادة</button>
-          <button class="nav-item" data-section="clients">الموكلين</button>
-          <button class="nav-item" data-section="cases">القضايا</button>
-          <button class="nav-item" data-section="sessions">الجلسات</button>
-          <button class="nav-item" data-section="tasks">المهام</button>
-          <button class="nav-item" data-section="reports">التقارير</button>
-        </nav>
+          <nav class="nav" aria-label="التنقل الرئيسي">
+            <button class="nav-item active" data-section="dashboard">لوحة القيادة</button>
+            <button class="nav-item" data-section="clients">الموكلين</button>
+            <button class="nav-item" data-section="cases">القضايا</button>
+            <button class="nav-item" data-section="sessions">الجلسات</button>
+            <button class="nav-item" data-section="tasks">المهام</button>
+            <button class="nav-item" data-section="reports">التقارير</button>
+          </nav>
+        </div>
 
         <div class="sidebar-footer">
           <button id="logout-btn" class="danger-btn">تسجيل الخروج</button>
@@ -111,22 +118,22 @@
             <button class="primary-btn small" id="new-client-btn">إضافة موكل</button>
           </div>
 
-          <form id="client-form" class="card-form glass">
+          <form id="client-form" class="card-form glass" novalidate>
             <input type="hidden" id="client-id" />
             <div class="form-grid two-columns">
-              <div>
+              <div class="field">
                 <label>اسم الموكل</label>
                 <input type="text" id="client-name" required />
               </div>
-              <div>
+              <div class="field">
                 <label>رقم الملف</label>
                 <input type="text" id="client-file" required />
               </div>
-              <div>
+              <div class="field">
                 <label>رقم الهاتف</label>
                 <input type="tel" id="client-phone" />
               </div>
-              <div>
+              <div class="field">
                 <label>نوع القضية</label>
                 <input type="text" id="client-case-type" />
               </div>
@@ -159,18 +166,18 @@
             <button class="primary-btn small" id="new-case-btn">إضافة قضية</button>
           </div>
 
-          <form id="case-form" class="card-form glass">
+          <form id="case-form" class="card-form glass" novalidate>
             <input type="hidden" id="case-id" />
             <div class="form-grid two-columns">
-              <div>
+              <div class="field">
                 <label>اسم الموكل</label>
                 <select id="case-client"></select>
               </div>
-              <div>
+              <div class="field">
                 <label>عنوان القضية</label>
                 <input type="text" id="case-title" required />
               </div>
-              <div>
+              <div class="field">
                 <label>نوع القضية</label>
                 <select id="case-type">
                   <option value="مدنية">مدنية</option>
@@ -179,7 +186,7 @@
                   <option value="أخرى">أخرى</option>
                 </select>
               </div>
-              <div>
+              <div class="field">
                 <label>الحالة</label>
                 <select id="case-status">
                   <option value="نشطة">نشطة</option>
@@ -216,22 +223,22 @@
             <button class="primary-btn small" id="new-session-btn">إضافة جلسة</button>
           </div>
 
-          <form id="session-form" class="card-form glass">
+          <form id="session-form" class="card-form glass" novalidate>
             <input type="hidden" id="session-id" />
             <div class="form-grid two-columns">
-              <div>
+              <div class="field">
                 <label>الموكل</label>
                 <select id="session-client"></select>
               </div>
-              <div>
+              <div class="field">
                 <label>تاريخ الجلسة</label>
                 <input type="date" id="session-date" required />
               </div>
-              <div>
+              <div class="field">
                 <label>الوقت</label>
                 <input type="time" id="session-time" required />
               </div>
-              <div>
+              <div class="field">
                 <label>نوع الجلسة</label>
                 <input type="text" id="session-type" placeholder="مثال: تمهيدية" />
               </div>
@@ -264,18 +271,18 @@
             <button class="primary-btn small" id="new-task-btn">إضافة مهمة</button>
           </div>
 
-          <form id="task-form" class="card-form glass">
+          <form id="task-form" class="card-form glass" novalidate>
             <input type="hidden" id="task-id" />
             <div class="form-grid two-columns">
-              <div>
+              <div class="field">
                 <label>عنوان المهمة</label>
                 <input type="text" id="task-title" required />
               </div>
-              <div>
+              <div class="field">
                 <label>الأولوية</label>
                 <select id="task-priority">
                   <option value="عالية">عالية</option>
-                  <option value="متوسطة">متوسطة</option>
+                  <option value="متوسطة" selected>متوسطة</option>
                   <option value="منخفضة">منخفضة</option>
                 </select>
               </div>
